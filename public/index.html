@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+</head>
+<body>
+    <h2>Notes</h2>
+    <search>
+        <form method="GET" name="searchForm">
+            <input type="search" name="search" placeholder="Search..." />
+            <button type="submit">Search</button>
+        </form>
+    </search>
+
+    <ul class="notesList" id="notesList">
+        <!-- notes date and title to be rendered here -->
+    </ul>
+
+    <form name="noteForm" class="noteForm">
+        <input type="text" name="title" id="noteTitle" required placeholder="Title...">
+        <time id="createdAt"></time>
+        <textarea name="body" id="noteBody" rows="8"></textarea>
+        <div class="buttonsClaster">
+            <button>Apply</button>
+            <button>Cancel</button>
+        </div>        
+    </form>
+
+    <button id="newNote">NEW</button>
+
+    <script>
+        const notesList = document.getElementById("notesList");
+        const dateFormatter = new Intl.DateTimeFormat("he");
+
+        const noteForm = document.forms["noteForm"];
+
+        renderNotes();     
+
+        notesList.addEventListener("click", function(e){
+            const target = (e.target).closest("li");
+            const noteId = target.dataset.id;
+            console.log("expensesList clicked");
+            if (!noteId){
+                return;
+            }
+            console.log(`Note ${noteId} clicked`);
+            
+            showNotesForm(noteId);
+        });
+
+        async function renderNotes() {
+            const res = await fetch("/api/notes");
+            const notes = await res.json();
+            
+            notesList.innerHTML = notes
+                .map((note) => `
+                                <li data-id="${note.id}">
+                                    ${(dateFormatter.format(note.createdAt))} ${note.title}
+                                </li>
+                                `)
+                .join("\n");
+        }
+
+        async function showNotesForm(noteID) {
+            const res = await fetch(`/api/notes/${noteID}`);
+            const note = await res.json();
+
+            console.log(note.title);
+            noteForm.reset();
+
+            noteForm.title.value = note.title;            
+            console.log(note.body);
+            noteForm.body.value = note.body || "";
+
+            const createdAt = document.getElementById("createdAt");
+            createdAt.setAttribute("datetime", new Date(note.createdAt).toISOString());
+            createdAt.textContent = dateFormatter.format(new Date(note.createdAt));
+        }
+        
+        
+    </script>
+
+</body>
+</html>

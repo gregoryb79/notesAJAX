@@ -17,15 +17,27 @@ function loadNotes() : Map<string,Note> {
     try {
         const fileData = readFileSync(dataPath, "utf8");
         console.log((new Date()).toLocaleString(),`Notes loaded from ${dataPath}`);
-        return JSON.parse(fileData);
+        const notesArray: [string, Note][] = Object.entries(JSON.parse(fileData));
+        const notes = new Map<string, Note>(notesArray);
+        // for (const id of notes.keys()){
+        //     console.log(`${id} - ${notes.get(id)?.id} ${notes.get(id)?.title}`);
+        // }
+        return notes;
     } catch (error) {
         console.error(error);
         return new Map<string, Note>();
     }
+
+     
 }
 
 export function getNotes(){    
     return Array.from(notes.values()).sort((a,b) => b.createdAt - a.createdAt);
+}
+
+export function getNote(id : string) : Note | undefined{
+    const note = notes.get(id);
+    return note;
 }
 
 function saveNotes() {
