@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./dist/styles.css">
     <title>Notes</title>
 </head>
 <body>
@@ -18,7 +19,7 @@
         <!-- notes date and title to be rendered here -->
     </ul>
 
-    <form name="noteForm" class="noteForm">
+    <form name="noteForm" class="noteForm addNote">
         <input type="text" name="noteId" id="noteId" hidden>
         <input type="text" name="title" id="noteTitle" required placeholder="Title...">
         <time id="createdAt"></time>
@@ -33,14 +34,18 @@
     <button id="newNote">+</button>
 
     <script>
+       
         const notesList = document.getElementById("notesList");
         const dateFormatter = new Intl.DateTimeFormat("he");
 
-        const noteForm = document.forms["noteForm"];
+        const noteForm = document.forms["noteForm"];        
         const newNote = document.getElementById("newNote");
         const cancelButton = document.getElementById("cancelButton");
         const deleteButton = document.getElementById("deleteButton");
         const createdAt = document.getElementById("createdAt");
+
+        let noteFormShown = false;
+        let editing = false;
 
         renderNotes();     
 
@@ -51,22 +56,37 @@
             if (!noteId){
                 return;
             }
-            console.log(`Note ${noteId} clicked`);
+            editing = true;
+            console.log(`Note ${noteId} clicked, editing = ${editing}`);
+
+            if (noteFormShown && !editing) {
+                noteForm.classList.remove("active");
+                notesList.classList.remove("disabled");
+                noteFormShown = false;
+            } else{                
+                showNotesForm(noteId);
+                noteForm.classList.add("active");
+                notesList.classList.add("disabled");
+                noteFormShown = true;           
+                console.log(`note form done, formShown is: ${noteFormShown}`);
+            }            
             
-            showNotesForm(noteId);
         });
 
-        let noteFormShown = false;
+        
         newNote.addEventListener("click", function(e){
             console.log(`"New Note" clicked, formShown is: ${noteFormShown}.`);
-            if (noteFormShown) {
+            if (noteFormShown && !editing) {
                 noteForm.classList.remove("active");
+                notesList.classList.remove("disabled");
                 noteFormShown = false;
             } else{
-                const id = crypto.randomUUID().replaceAll("-", "").slice(-8);
-                showNotesForm(id);
+                const id = crypto.randomUUID().replaceAll("-", "").slice(-8);               
                 noteForm.classList.add("active");
-                noteFormShown = true;           
+                notesList.classList.add("disabled");
+                showNotesForm(id);
+                noteFormShown = true; 
+                editing = false;          
                 console.log(`note form done, formShown is: ${noteFormShown}`);
             }
         });
@@ -94,13 +114,15 @@
                 e.target
                 .querySelectorAll("input, textarea, button")
                 .forEach((element) => element.disabled = false);
-                
+
                 console.log(`note: ${rawNote.noteId} - ${rawNote.title} is DELETED`);
                 noteForm.reset();
                 createdAt.removeAttribute("datetime");
                 createdAt.textContent = "";
-                noteForm.classList.remove("active");            
+                noteForm.classList.remove("active"); 
+                notesList.classList.remove("disabled");           
                 noteFormShown = false;
+                editing = false;
                 console.log(`note form hidden, formShown is: ${noteFormShown}`);
                 renderNotes();
                 return;
@@ -126,7 +148,9 @@
                 .forEach((element) => element.disabled = false);
             noteForm.reset();
             noteForm.classList.remove("active");
+            notesList.classList.remove("disabled");
             noteFormShown = false;
+            editing = false;
             renderNotes();
         });
 
@@ -136,8 +160,10 @@
             noteForm.reset();
             createdAt.removeAttribute("datetime");
             createdAt.textContent = "";
-            noteForm.classList.remove("active");            
+            noteForm.classList.remove("active");    
+            notesList.classList.remove("disabled");        
             noteFormShown = false;
+            editing = false;
             console.log(`note form hidden, formShown is: ${noteFormShown}`);
         });                           
 

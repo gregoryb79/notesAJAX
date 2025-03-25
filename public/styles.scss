@@ -1,0 +1,136 @@
+:root{
+    --primatry-color: #3f6ff3;
+    --secondary-color: #e2e9fd;     
+
+    --text-color-primary: #000000;
+    --text_color_secondary: #545454;
+
+    --h2-font-size: clamp(1.5rem, 2.5vw, 2.5rem);//2.5rem;
+    --metersFont : clamp(1.2rem, 3vw, 2rem);//2rem;
+    --regularFont : clamp(0.8rem, 1.8vw, 1.2rem);//1.2rem;
+    --largeFont : clamp(1rem, 2vw, 1.5rem);//1.5rem;
+   
+    @media (prefers-color-scheme: dark) {
+       
+    }
+
+    @media screen and (max-width: 48rem) {
+       
+    }
+}
+
+$bp-mobile: 27rem;
+$bp-tablet: 48rem;
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: 'Archivo Black', sans-serif;
+}
+
+* {
+    // margin: 0;    
+}
+
+ul, ol, menu, li {
+    padding: 0;
+    list-style: none;
+    
+}
+
+html{
+    // background-color: var(--margin-color,darkgrey);
+    font-size: var(--regularFont,1rem);
+    color: var(--text-color-primary);
+}
+
+body, main {
+    background-color: var(--backgroundColor,white);    
+}
+
+h2{
+    color: var(--text-color-primary);
+    font-size: var(--h2-font-size, 3rem);
+    text-align: center;
+}
+
+h3{
+    text-align: center;
+    color: var(--text_color_main);
+    font-size: var(--regularFont, 2rem);
+}
+
+p{
+    color: var(--text_color_secondary);
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.notesList{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 70vh;
+    max-width: 50vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0.5rem;
+    overflow: auto;
+    // border: 1px solid darkgray; 
+
+    li{
+        cursor: pointer;
+        &:hover{
+            transform: scale(1.01);
+            color: darkblue;
+        }
+    }
+
+    &.disabled {
+        pointer-events: none; 
+        opacity: 0.5; 
+    }
+}
+
+.noteForm{
+    position: absolute;
+    border: 1px solid darkgray;    
+    font-size: var(--largeFont);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    
+    button{
+        font-size: var(--largeFont);
+        border: 1px solid darkgray;    
+        width: 6rem;
+        margin-left: auto;
+        margin-right: auto;
+        cursor: pointer;
+        &:hover{
+            transform: scale(1.1);
+        }
+    }
+}
+
+.addNote{
+
+    visibility: hidden;
+    opacity: 0;
+    background-color: seashell;
+    z-index: 999;
+    grid-column: 2/5;
+    grid-row: 4/12;
+    border: 1px solid darkgray;    
+    
+    &.active {
+        opacity: 1;
+        visibility: visible; 
+    }
+}
