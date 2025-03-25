@@ -35,3 +35,29 @@ router.get("/:id", (req, res) => {
     console.log(`Note id: ${note.id} with title ${note.title} is sent as json.`);
     res.json(note);
 });
+
+router.put("/:id", async (req, res) => {
+    const body = req.body;
+    const { id } = req.params;
+
+    await model.createOrUpdate(id, body);
+
+    res.status(201);
+    res.end();
+});
+
+router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await model.deleteNote(id);        
+    } catch {
+        console.log(`Couldnt delete note id: ${id}.`);
+        res.status(404);
+        res.end();
+        return;
+    }
+
+    res.status(204);
+    res.end();
+});

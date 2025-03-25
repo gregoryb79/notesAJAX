@@ -41,7 +41,7 @@ export function getNote(id : string) : Note | undefined{
 }
 
 function saveNotes() {
-    return writeFile(dataPath, JSON.stringify(notes));
+    return writeFile(dataPath, JSON.stringify(Object.fromEntries(notes),null,2));
 }
 
 type UpdateNotegData = Omit<Note, "id" | "createdAt">;
@@ -59,6 +59,11 @@ export function createOrUpdate(id: string, data: UpdateNotegData) {
             ...data
         });
     }
+
+    for (const id of notes.keys()){
+            console.log(`${id} - ${notes.get(id)?.id} ${notes.get(id)?.title}`);
+    }
+
 
     return saveNotes();
 }
