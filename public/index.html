@@ -7,38 +7,42 @@
     <title>Notes</title>
 </head>
 <body>
-    <h2>Notes</h2>
-    <search>
-        <form method="GET" name="searchForm">
-            <input type="search" name="search" placeholder="Search..." />
-            <button type="submit">Search</button>
+    <main class="u-border-radius-8">
+        <h2>Notes</h2>
+        <search>
+            <form name="searchForm">
+                <input type="search" name="search" placeholder="Search..." />
+                <button type="submit">Search</button>
+            </form>
+        </search>
+    
+        <ul class="notesList" id="notesList">
+            <!-- notes date and title to be rendered here -->
+        </ul>
+    
+        <form name="noteForm" class="noteForm addNote u-border-radius-8">
+            <input type="text" name="noteId" id="noteId" hidden>
+            <input type="text" name="title" id="noteTitle" required placeholder="Title...">
+            <time id="createdAt"></time>
+            <textarea name="body" id="noteBody" rows="8"></textarea>
+            <div class="buttonsClaster">
+                <button type="submit">Apply</button>
+                <button type="button" id = "cancelButton">Cancel</button>
+                <button type="submit" id = "deleteButton">Delete</button>
+            </div>        
         </form>
-    </search>
-
-    <ul class="notesList" id="notesList">
-        <!-- notes date and title to be rendered here -->
-    </ul>
-
-    <form name="noteForm" class="noteForm addNote">
-        <input type="text" name="noteId" id="noteId" hidden>
-        <input type="text" name="title" id="noteTitle" required placeholder="Title...">
-        <time id="createdAt"></time>
-        <textarea name="body" id="noteBody" rows="8"></textarea>
-        <div class="buttonsClaster">
-            <button type="submit">Apply</button>
-            <button type="button" id = "cancelButton">Cancel</button>
-            <button type="submit" id = "deleteButton">Delete</button>
-        </div>        
-    </form>
-
-    <button id="newNote">+</button>
+    
+        <button id="newNote" class="plusButton">+</button>
+    </main>
+    
 
     <script>
        
         const notesList = document.getElementById("notesList");
         const dateFormatter = new Intl.DateTimeFormat("he");
 
-        const noteForm = document.forms["noteForm"];        
+        const noteForm = document.forms["noteForm"];  
+        const searchForm = document.forms["searchForm"];        
         const newNote = document.getElementById("newNote");
         const cancelButton = document.getElementById("cancelButton");
         const deleteButton = document.getElementById("deleteButton");
@@ -47,7 +51,7 @@
         let noteFormShown = false;
         let editing = false;
 
-        renderNotes();     
+        renderNotes("");     
 
         notesList.addEventListener("click", function(e){
             const target = (e.target).closest("li");
@@ -124,7 +128,7 @@
                 noteFormShown = false;
                 editing = false;
                 console.log(`note form hidden, formShown is: ${noteFormShown}`);
-                renderNotes();
+                renderNotes("");
                 return;
             }                      
                        
@@ -151,7 +155,18 @@
             notesList.classList.remove("disabled");
             noteFormShown = false;
             editing = false;
-            renderNotes();
+            renderNotes("");
+        });
+
+        searchForm.addEventListener("submit", async function(e){
+            e.preventDefault();
+            const formData = new FormData(e.target, e.submitter);
+            const searchQuery = formData.get("search");
+            console.log(`Search is submitted.\n
+                        Search querry is: ${searchQuery}`);
+                
+            
+            renderNotes(`?search=${searchQuery}`);
         });
 
         cancelButton.addEventListener("click", function(e){
@@ -167,8 +182,8 @@
             console.log(`note form hidden, formShown is: ${noteFormShown}`);
         });                           
 
-        async function renderNotes() {
-            const res = await fetch("/api/notes");
+        async function renderNotes(query) {
+            const res = await fetch(`/api/notes${query}`);
             const notes = await res.json();
             
             notesList.innerHTML = notes

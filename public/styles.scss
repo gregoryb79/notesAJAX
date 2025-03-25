@@ -66,18 +66,35 @@ p{
     color: var(--text_color_secondary);
 }
 
-body{
+main{
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 45vw;
+    margin: auto;
+    border: 1px solid darkgray;    
+}
+
+.u-border-radius-8{
+    border-radius: 0.5rem;
+}
+
+.plusButton{
+    border-radius: 50%;
+    aspect-ratio: 1;
+    border: 1px solid black;
+    margin-bottom: 0.5rem;
+    font-size: var(--largeFont,1.5rem);
+    cursor: pointer;
+    
 }
 
 .notesList{
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    max-height: 70vh;
-    max-width: 50vw;
+    max-height: 65vh;
+    width: 40vw;
     padding-left: 1rem;
     padding-right: 1rem;
     padding-bottom: 0.5rem;
@@ -99,24 +116,42 @@ body{
 }
 
 .noteForm{
+    top: 2rem;
     position: absolute;
     border: 1px solid darkgray;    
     font-size: var(--largeFont);
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-around;    
+    width: 30vw;
+    height: 20vw;  
     
+    & > * {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    &:last-child{
+        align-items: center;
+    }
+    
+}
+
+.buttonsClaster{
+    display: flex;
+    justify-content: space-around;
+   
     button{
-        font-size: var(--largeFont);
+        font-size: var(--regularFont);
         border: 1px solid darkgray;    
-        width: 6rem;
-        margin-left: auto;
-        margin-right: auto;
+        width: 5rem;  
+        border-radius: 0.25rem;
         cursor: pointer;
         &:hover{
             transform: scale(1.1);
         }
     }
+
 }
 
 .addNote{
