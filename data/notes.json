@@ -8,8 +8,7 @@
   "2f1cae6d": {
     "id": "2f1cae6d",
     "createdAt": 1742801376037,
-    "title": "Note 17",
-    "body": null
+    "title": "Note 17"
   },
   "3f1cae6d": {
     "id": "3f1cae6d",
@@ -117,5 +116,11 @@
     "id": "7db2ce88",
     "createdAt": 1742909743531,
     "title": "Very long note title to check how this is handled by wrapper"
+  },
+  "1e9068b8": {
+    "id": "1e9068b8",
+    "createdAt": 1743413012415,
+    "title": "test",
+    "body": "test test"
   }
 }
