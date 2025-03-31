@@ -53,57 +53,11 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         e.preventDefault();         
 
         const formElement = e.target as HTMLFormElement;
-        const formData = new FormData(formElement , e.submitter);
-
-        // const rawNote = Object.fromEntries(formData);  
-        // console.log(`form submitted, id: ${rawNote.noteId}, title: ${rawNote.title}`);
-        // const note = {id : rawNote.noteId,
-        //             title: rawNote.title,
-        //             body: rawNote.body || undefined};
-
-        
-
-        // const buttonClicked = e.submitter;
-        // if (buttonClicked?.id === "deleteButton"){
-        //     console.log(`DELETE requested for note: ${note.id} - ${note.title}`);
-
-        //     formElement
-        //     .querySelectorAll("input, textarea, button")
-        //     .forEach((element) => (element as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement).disabled = true);
-
-        //     await fetch(`/api/notes/${note.id}`, {method: "delete"});
-
-        //     formElement
-        //     .querySelectorAll("input, textarea, button")
-        //     .forEach((element) => (element as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement).disabled = false);
-
-        //     console.log(`note: ${rawNote.noteId} - ${rawNote.title} is DELETED`);
-        //     noteForm.reset();
-        //     createdAt.removeAttribute("datetime");
-        //     createdAt.textContent = "";
-        //     noteForm.classList.remove("active"); 
-        //     notesList.classList.remove("disabled");           
-        //     noteFormShown = "hidden";                
-        //     console.log(`note form hidden, noteFormShown is: ${noteFormShown}`);
-        //     renderNotes("");
-        //     return;
-        // }                      
-                    
-        // const body = JSON.stringify(note);
-        // console.log(body);
+        const formData = new FormData(formElement , e.submitter);     
 
         formElement
             .querySelectorAll("input, textarea, button")
             .forEach((element) => (element as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement).disabled = true);
-
-        // await fetch(`/api/notes/${note.id}`, {
-        //     method: "put",
-        //     body,
-        //     headers: {
-        //         "content-type": "application/json"
-        //     }
-        // });
-
         try{
             await onNoteFormSubmit(formData);
         }catch(error){
@@ -149,8 +103,7 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
     });                           
 
     async function renderNotes(query : string) {
-        // const res = await fetch(`/api/notes${query}`);
-        // const notes: Note[] = await res.json();
+        
         try{
             const notes = await getNotes(query);
         
@@ -167,16 +120,11 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         
     }  
 
-    async function showNotesForm(noteId : string) {
-
-        // const res = await fetch(`/api/notes/${noteId}`);
+    async function showNotesForm(noteId : string) {        
 
         const note = await getNote(noteId);
 
-
-    
         if (note){
-            // const note = await res.json();
             console.log(`note title is: ${note.title}`);
             noteForm.reset();
     
