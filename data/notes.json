@@ -117,10 +117,16 @@
     "createdAt": 1742909743531,
     "title": "Very long note title to check how this is handled by wrapper"
   },
-  "1e9068b8": {
-    "id": "1e9068b8",
-    "createdAt": 1743413012415,
-    "title": "test",
-    "body": "test test"
+  "55f9ea2c": {
+    "id": "55f9ea2c",
+    "createdAt": 1743429957318,
+    "title": "Test",
+    "body": "super test"
+  },
+  "4c9a0d99": {
+    "id": "4c9a0d99",
+    "createdAt": 1743429971443,
+    "title": "Another test",
+    "body": "test"
   }
 }

@@ -26,9 +26,9 @@
             <time id="createdAt"></time>
             <textarea name="body" id="noteBody" rows="8"></textarea>
             <div class="buttonsClaster">
-                <button type="submit">Apply</button>
+                <button type="submit" name="action" value="apply">Apply</button>
                 <button type="button" id = "cancelButton">Cancel</button>
-                <button type="submit" id = "deleteButton">Delete</button>
+                <button type="submit" name="action" value="delete" id = "deleteButton">Delete</button>
             </div>        
         </form>
     
@@ -38,7 +38,7 @@
 
     <script type="module">
 
-        import {index} from "./index.js";
+        import {index} from "./view.js";
 
         index(document.getElementById("notesList"),  document.forms["noteForm"],
             document.forms["searchForm"], document.getElementById("newNote"),
