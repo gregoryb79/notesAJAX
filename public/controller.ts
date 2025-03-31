@@ -19,31 +19,31 @@ export async function onNoteFormSubmit(formData: FormData){
     }
     if (typeof rawNote.body !== "string"){
         throw new Error("Note content must be a string");
-    }
-
-    const note = {id : rawNote.noteId,
+    }   
+    const note = {_id : rawNote.noteId,
         title: rawNote.title,
-        body: rawNote.body || undefined};
+        body: rawNote.body || undefined,
+    };
 
     const buttonClicked = formData.get("action");  
 
     if (buttonClicked == "delete"){
         
         try{
-            await deleteNote(note.id);
+            await deleteNote(note._id);
         } catch (error){
-            console.error(`failed to delete note: ${note.id} - ${note.title}, error: ${error}`);
+            console.error(`failed to delete note: ${note._id} - ${note.title}, error: ${error}`);
         }        
-        console.log(`note: ${note.id} - ${note.title} is DELETED`);
+        console.log(`note: ${note._id} - ${note.title} is DELETED`);
 
     }else if (buttonClicked == "apply"){
         
         try{
             await addEditNote(note);
         } catch (error){
-            console.error(`failed to apply note: ${note.id} - ${note.title}, error: ${error}`);
+            console.error(`failed to apply note: ${note._id} - ${note.title}, error: ${error}`);
         }        
-        console.log(`note: ${note.id} - ${note.title} is added/edited`);
+        console.log(`note: ${note._id} - ${note.title} is added/edited`);
     }
 
     

@@ -1,16 +1,20 @@
 export type Note = {
-    id: string,
-    createdAt: number,
+    _id: string,
+    createdAt: string,
     title: string,
     body?: string
 };
 
-type submittedNote = Omit<Note,"createdAt">;
+type submittedNote = {
+    _id: string,    
+    title: string,
+    body?: string
+}
 export async function addEditNote(note : submittedNote) : Promise<void> {
     const body = JSON.stringify(note);
     console.log(body);
     try{
-        const res = await fetch(`/api/notes/${note.id}`, {
+        const res = await fetch(`/api/notes/${note._id}`, {
                 method: "put",
                 body,
                 headers: {
@@ -39,14 +43,22 @@ export async function deleteNote(id : string): Promise<void>{
     }
 }
 
-export async function getNotes(query : string) : Promise<Note[]>{
+type returnedNotes = {
+    _id: string,    
+    title: string,
+    createdAt: string
+}
+export async function getNotes(query : string) : Promise<returnedNotes[]>{
     try {
         const res = await fetch(`/api/notes${query}`);
         if (!res.ok) {
             throw new Error(`Failed to fetch notes. Status: ${res.status}`);
         }
-        const notes: Note[] = await res.json();
-        return notes;
+        const notesRaw = await res.json();
+        console.log("notesRaw:");
+        console.log(notesRaw);
+        const notes: returnedNotes[] = notesRaw;
+        return notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }catch (error) {
         console.error("Error fetching notes:", error);
         throw error; 

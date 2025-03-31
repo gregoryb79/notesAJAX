@@ -35,15 +35,15 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
     
     newNote.addEventListener("click", function(e){
         console.log(`"New Note" clicked, formShown is: ${noteFormShown}.`);
-        if (noteFormShown == "editing") {
+        if (noteFormShown == "shown") {
             noteForm.classList.remove("active");
             notesList.classList.remove("disabled");
             noteFormShown = "hidden";
-        } else{
-            const id = crypto.randomUUID().replace(/-/g, "").slice(-8);               
+        } else{                         
             noteForm.classList.add("active");
             notesList.classList.add("disabled");
-            showNotesForm(id);
+            console.log("requesting 'showNotesForm' with 'new_note' as id");
+            showNotesForm("new_note");
             noteFormShown = "shown"; 
             console.log(`note form done, noteFormShown is: ${noteFormShown}`);
         }
@@ -106,11 +106,12 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         
         try{
             const notes = await getNotes(query);
+            console.log(notes);
         
             notesList.innerHTML = notes
                 .map((note) => `
-                                <li data-id="${note.id}">
-                                    ${(dateFormatter.format(note.createdAt))} ${note.title}
+                                <li data-id="${note._id}">
+                                    ${(new Date(note.createdAt).toLocaleDateString("he"))} ${note.title}
                                 </li>
                                 `)
                 .join("\n");
@@ -121,25 +122,31 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
     }  
 
     async function showNotesForm(noteId : string) {        
+    
 
-        const note = await getNote(noteId);
+        if (noteId != "new_note"){
 
-        if (note){
+            const note = await getNote(noteId);
+            if (!note){
+                return;
+            }
+
             console.log(`note title is: ${note.title}`);
             noteForm.reset();
     
-            noteForm.noteId.value = note.id;
+            noteForm.noteId.value = note._id;
             const title = noteForm.elements.namedItem('title') as HTMLInputElement;
             title.value = note.title;            
             console.log(note.body);
             noteForm.body.value = note.body || "";
-            createdAt.setAttribute("datetime", new Date(note.createdAt).toISOString());
+            createdAt.setAttribute("datetime", new Date(note.createdAt).toLocaleDateString("he"));
             createdAt.textContent = dateFormatter.format(new Date(note.createdAt));
         } else{
+            console.log(`making empty form with noteId = ${noteId}`);
             noteForm.reset();
             noteForm.noteId.value = noteId;    
     
-            createdAt.setAttribute("datetime", new Date().toISOString());
+            createdAt.setAttribute("datetime", new Date().toLocaleDateString("he"));
             createdAt.textContent = dateFormatter.format(new Date());
         }                     
     }
