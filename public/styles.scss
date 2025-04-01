@@ -9,6 +9,7 @@
     --metersFont : clamp(1.2rem, 3vw, 2rem);//2rem;
     --regularFont : clamp(0.8rem, 1.8vw, 1.2rem);//1.2rem;
     --largeFont : clamp(1rem, 2vw, 1.5rem);//1.5rem;
+    --iconWidth : 4rem;
    
     @media (prefers-color-scheme: dark) {
        
@@ -72,11 +73,19 @@ main{
     align-items: center;
     width: 45vw;
     margin: auto;
-    border: 1px solid darkgray;    
+    border: 1px solid darkgray;     
+    
+    > *:first-child {
+        align-self: flex-start;
+    }
 }
 
 .u-border-radius-8{
     border-radius: 0.5rem;
+}
+
+.u-margin-top-0{
+    margin-top: 0;
 }
 
 .plusButton{
@@ -94,6 +103,7 @@ main{
     flex-direction: column;
     gap: 0.5rem;
     max-height: 65vh;
+    min-height: 20vh;
     width: 40vw;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -115,7 +125,7 @@ main{
     }
 }
 
-.noteForm{
+.popUpForm{
     top: 2rem;
     position: absolute;
     border: 1px solid darkgray;    
@@ -154,7 +164,7 @@ main{
 
 }
 
-.addNote{
+.showForm{
 
     visibility: hidden;
     opacity: 0;
@@ -167,5 +177,28 @@ main{
     &.active {
         opacity: 1;
         visibility: visible; 
+    }
+}
+
+.topNavMenu{
+    margin-left: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.loginButton{
+    visibility: hidden;
+    opacity: 0;
+
+    border-radius: 0.25rem;
+    border: 1px solid darkgray;
+
+    &.active {
+        opacity: 1;
+        visibility: visible; 
+    }
+
+    cursor: pointer;
+    &:hover{
+        transform: scale(1.1);
     }
 }

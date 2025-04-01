@@ -1,5 +1,4 @@
 import express from "express";
-// import * as model from "../models/notes.model";
 import {Note} from "../models/notes.model"
 import mongoose from "mongoose";
 
@@ -76,7 +75,7 @@ router.put("/:id", async (req, res) => {
         const newNote = new Note({
             title: body.title,
             body: body.body,
-            createdAt: new Date(),
+            // createdAt: new Date(),
         });
         console.log(newNote);
          try{

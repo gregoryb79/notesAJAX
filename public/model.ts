@@ -54,10 +54,10 @@ export async function getNotes(query : string) : Promise<returnedNotes[]>{
         if (!res.ok) {
             throw new Error(`Failed to fetch notes. Status: ${res.status}`);
         }
-        const notesRaw = await res.json();
-        console.log("notesRaw:");
-        console.log(notesRaw);
-        const notes: returnedNotes[] = notesRaw;
+        // const notesRaw = await res.json();
+        // console.log("notesRaw:");
+        // console.log(notesRaw);
+        const notes: returnedNotes[] =  await res.json();
         return notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }catch (error) {
         console.error("Error fetching notes:", error);

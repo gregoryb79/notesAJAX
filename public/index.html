@@ -8,19 +8,22 @@
 </head>
 <body>
     <main class="u-border-radius-8">
-        <h2>Notes</h2>
+        <nav class="topNavMenu">
+            <button id="loginButton" class="loginButton active">Login</button>
+        </nav>
+        <h2 class="u-margin-top-0">Notes</h2>
         <search>
             <form name="searchForm">
                 <input type="search" name="search" placeholder="Search..." />
                 <button type="submit">Search</button>
             </form>
         </search>
-    
+        
         <ul class="notesList" id="notesList">
             <!-- notes date and title to be rendered here -->
         </ul>
     
-        <form name="noteForm" class="noteForm addNote u-border-radius-8">
+        <form name="noteForm" class="popUpForm showForm u-border-radius-8">
             <input type="text" name="noteId" id="noteId" hidden>
             <input type="text" name="title" id="noteTitle" required placeholder="Title...">
             <time id="createdAt"></time>
@@ -31,7 +34,33 @@
                 <button type="submit" name="action" value="delete" id = "deleteButton">Delete</button>
             </div>        
         </form>
-    
+
+        <form name="loginForm" class="popUpForm showForm u-border-radius-8">            
+            <label for="username">Login</label>
+            <input type="email" name="username" id="username" autocomplete="username" required placeholder="e-mail">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" autocomplete="current-password" required>            
+            <div class="buttonsClaster">
+                <button type="submit" name="action" value="apply">Submit</button>
+                <button type="button" id = "loginCancel">Cancel</button>
+                <button type="submit" name="action" value="register">Register</button>
+            </div>        
+        </form>
+
+        <form name="registerForm" class="popUpForm showForm u-border-radius-8">            
+             <label for="newUsername">Insert Username</label>
+            <input type="email" name="username" id="newUsername" autocomplete="username" required placeholder="use your e-mail">
+            <label for="newPassword">Select Password</label>
+            <input type="password" name="password" id="newPassword" autocomplete="current-password" required> 
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" required placeholder="Full Name">           
+            <div class="buttonsClaster">
+                <button type="submit" name="action" value="signUp">Sign Up</button>
+                <button type="button" id = "registerCancel">Cancel</button>
+                <!-- <button type="submit" name="action" value="register">Register</button> -->
+            </div>        
+        </form>
+        
         <button id="newNote" class="plusButton">+</button>
     </main>
     
@@ -43,7 +72,8 @@
         index(document.getElementById("notesList"),  document.forms["noteForm"],
             document.forms["searchForm"], document.getElementById("newNote"),
             document.getElementById("cancelButton"),document.getElementById("deleteButton"),
-            document.getElementById("createdAt")
+            document.getElementById("createdAt"),  document.getElementById("loginlButton"),
+            document.getElementById("loginCancel"), document.forms["loginForm"]
         );       
         
     </script>
