@@ -26,7 +26,12 @@
         <form name="noteForm" class="popUpForm showForm u-border-radius-8">
             <input type="text" name="noteId" id="noteId" hidden>
             <input type="text" name="title" id="noteTitle" required placeholder="Title...">
-            <time id="createdAt"></time>
+            <section class="timeAndShare">
+                <time id="createdAt"></time>
+                <button type="button" name="action" value="share" id="shareButton" class="shareButton">
+                    <img src="./share-icon.svg" alt="share-icon" class="shareIcon">
+                </button>                
+            </section>            
             <textarea name="body" id="noteBody" rows="8"></textarea>
             <div class="buttonsClaster">
                 <button type="submit" name="action" value="apply">Apply</button>
@@ -74,7 +79,8 @@
             document.getElementById("cancelButton"), document.getElementById("createdAt"),  
             document.getElementById("loginButton"), document.getElementById("loginCancel"), 
             document.forms["loginForm"],document.getElementById("registerCancel"), 
-            document.forms["registerForm"],document.getElementById("registerLine")
+            document.forms["registerForm"],document.getElementById("registerLine"),
+            document.getElementById("shareButton")
         );       
         
     </script>
