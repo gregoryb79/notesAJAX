@@ -42,13 +42,13 @@
             <input type="password" name="password" id="password" autocomplete="current-password" required>            
             <div class="buttonsClaster">
                 <button type="submit" name="action" value="apply">Submit</button>
-                <button type="button" id = "loginCancel">Cancel</button>
-                <button type="submit" name="action" value="register">Register</button>
+                <button type="button" id = "loginCancel">Cancel</button>                
             </div>        
+            <p class="registerLine" id="registerLine">Don't have a user? Register.</p>
         </form>
 
         <form name="registerForm" class="popUpForm showForm u-border-radius-8">            
-             <label for="newUsername">Insert Username</label>
+            <label for="newUsername">Insert Username</label>
             <input type="email" name="username" id="newUsername" autocomplete="username" required placeholder="use your e-mail">
             <label for="newPassword">Select Password</label>
             <input type="password" name="password" id="newPassword" autocomplete="current-password" required> 
@@ -71,9 +71,10 @@
 
         index(document.getElementById("notesList"),  document.forms["noteForm"],
             document.forms["searchForm"], document.getElementById("newNote"),
-            document.getElementById("cancelButton"),document.getElementById("deleteButton"),
-            document.getElementById("createdAt"),  document.getElementById("loginlButton"),
-            document.getElementById("loginCancel"), document.forms["loginForm"]
+            document.getElementById("cancelButton"), document.getElementById("createdAt"),  
+            document.getElementById("loginButton"), document.getElementById("loginCancel"), 
+            document.forms["loginForm"],document.getElementById("registerCancel"), 
+            document.forms["registerForm"],document.getElementById("registerLine")
         );       
         
     </script>

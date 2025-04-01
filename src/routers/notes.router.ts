@@ -1,10 +1,11 @@
 import express from "express";
 import {Note} from "../models/notes.model"
+import { authenticate } from "../middleware/authenticate";
 import mongoose from "mongoose";
 
 export const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/",authenticate, async (req, res) => {
     const { search } = req.query;
 
     try{
@@ -25,7 +26,7 @@ router.get("/", async (req, res) => {
     }    
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id",authenticate, async (req, res) => {
     const { id } = req.params;    
 
     try{
@@ -48,7 +49,7 @@ router.get("/:id", async (req, res) => {
     }   
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id",authenticate, async (req, res) => {
     const body = req.body;
     const { id } = req.params;
     
@@ -91,7 +92,7 @@ router.put("/:id", async (req, res) => {
         
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",authenticate, async (req, res) => {
     const { id } = req.params;
 
     try {

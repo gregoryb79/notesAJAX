@@ -95,6 +95,11 @@ main{
     margin-bottom: 0.5rem;
     font-size: var(--largeFont,1.5rem);
     cursor: pointer;
+
+    &.disabled {
+        pointer-events: none; 
+        opacity: 0.5; 
+    }
     
 }
 
@@ -201,4 +206,14 @@ main{
     &:hover{
         transform: scale(1.1);
     }
+}
+
+.registerLine{
+    font-size: var(--smallFont,0.75rem);
+    color: #3f6ff3;
+    cursor: pointer;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
 }

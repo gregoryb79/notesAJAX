@@ -1,4 +1,4 @@
-import {Note, addEditNote, deleteNote} from "./model.js"
+import {doLogIn, addEditNote, deleteNote, doRegister} from "./model.js"
 
 export async function onNoteFormSubmit(formData: FormData){
 
@@ -47,4 +47,76 @@ export async function onNoteFormSubmit(formData: FormData){
     }
 
     
+}
+
+export async function onLoginFormSubmit(formData: FormData){
+
+    const rawData = Object.fromEntries(formData);  
+    console.log(`login form submitted, email: ${rawData.username}, password: ${rawData.password}`);
+
+    if(!rawData.username){
+        throw new Error("username can't be empty"); 
+    }
+    if (typeof rawData.username !== "string"){
+        throw new Error("username must be a string");
+    }
+    if(!rawData.password){
+        throw new Error("Password can't be empty"); 
+    }
+    if (typeof rawData.password !== "string"){
+        throw new Error("Password must be a string");
+    }
+     
+    const email = rawData.username;
+    const password = rawData.password; 
+        
+    try{
+        await doLogIn(email,password);
+    } catch (error){
+        console.error(`failed to log in with: ${email} - ${password}, error: ${error}`);
+    }        
+    console.log(`loged in with: ${email} - ${password}`);  
+   
+}
+
+export async function onRegisterFormSubmit(formData: FormData){
+
+    const rawData = Object.fromEntries(formData);  
+    console.log(`register form submitted, email: ${rawData.username},\n
+                 password: ${rawData.password},\n
+                 name: ${rawData.name}`);
+
+    if(!rawData.username){
+        throw new Error("username can't be empty"); 
+    }
+    if (typeof rawData.username !== "string"){
+        throw new Error("username must be a string");
+    }
+    if(!rawData.password){
+        throw new Error("Password can't be empty"); 
+    }
+    if (typeof rawData.password !== "string"){
+        throw new Error("Password must be a string");
+    }
+
+    if(!rawData.name){
+        throw new Error("Name can't be empty"); 
+    }
+    if (typeof rawData.name !== "string"){
+        throw new Error("Name must be a string");
+    }
+     
+    const user = {
+        email: rawData.username,
+        password: rawData.password,
+        name: rawData.name
+    };
+        
+    try{
+        await doRegister(user);
+    } catch (error){
+        console.error(`failed to register with: ${user.email}, error: ${error}`);
+    }        
+    console.log(`registered in with: ${user.email} - ${user.password}`);  
+   
 }
