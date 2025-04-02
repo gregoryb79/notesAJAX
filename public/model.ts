@@ -1,3 +1,6 @@
+import { addAbortListener } from "events";
+import { json } from "stream/consumers";
+
 export type Note = {
     _id: string,
     createdAt: string,
@@ -12,9 +15,10 @@ type User = {
     createdAt: string
 }
 
+let userId = "";
 
 type submittedNote = Omit<Note,"createdAt">;
-export async function addEditNote(note : submittedNote) : Promise<void> {
+export async function addEditNote(note : submittedNote) : Promise<string> {
     const body = JSON.stringify(note);
     console.log(body);
     try{
@@ -24,11 +28,15 @@ export async function addEditNote(note : submittedNote) : Promise<void> {
                 headers: {
                     "content-type": "application/json"
                 }
-            });
-        
+            });        
         if (!res.ok) {
             throw new Error(`Failed to add/edit note. Status: ${res.status}`);
-        }
+        } 
+        
+        const noteId = await res.json();
+        console.log(`Note added/edited, note id is ${noteId}`);
+        return noteId;
+        
     }catch (error) {
         console.error("Error adding/editing note:", error);
         throw error; 
@@ -140,7 +148,7 @@ export async function isLoggedIn():Promise<boolean> {
             console.log('No one is logged in.');
             return false;
         }
-        const userId = await res.json();
+        userId = await res.json();
         console.log(`User ${userId} is logged in.`);
         return true;
     }catch(error){
@@ -155,4 +163,49 @@ export async function logOut():Promise<void> {
     }catch(error){
         console.error(`Error logging out`, error);              
     } 
+}
+
+export async function sendMessage(note: submittedNote, email : string): Promise<void>{
+    
+    let recepientId = "";
+    try{
+        const res = await fetch(`/api/users?search=${email}`);
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`No recepient found Status: ${res.status}. Message: ${message}`);
+        }   
+        recepientId = await res.json();
+
+        console.log(`The ID of ${email} is ${recepientId}`);
+
+    }catch (error) {
+        console.error("Error sending note:", error);
+        throw error; 
+    }   
+    
+    const message = {
+        note : note._id,
+        to: recepientId,
+        from: userId,
+    }
+
+    const body = JSON.stringify(message);
+    console.log(body);
+    try{
+        const res = await fetch(`/api/messages`, {
+                method: "put",
+                body,
+                headers: {
+                    "content-type": "application/json"
+                }
+            });
+        
+        if (!res.ok) {
+            throw new Error(`Failed to add message note. Status: ${res.status}`);
+        }
+    }catch (error) {
+        console.error("Error adding message:", error);
+        throw error; 
+    }
+    
 }

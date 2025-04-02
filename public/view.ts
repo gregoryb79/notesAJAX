@@ -15,7 +15,8 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
     newNote : HTMLElement, cancelButton : HTMLButtonElement, createdAt : HTMLElement, 
     loginButton : HTMLButtonElement, loginCancel : HTMLButtonElement, 
     loginForm : HTMLFormElement, registerCancel : HTMLButtonElement,
-    registerForm : HTMLFormElement, registerLine : HTMLElement){
+    registerForm : HTMLFormElement, registerLine : HTMLElement, 
+    shareButton: HTMLButtonElement, emailField : HTMLElement){
 
     const dateFormatter = new Intl.DateTimeFormat("he");    
 
@@ -94,6 +95,8 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         noteForm.classList.remove("active");
         notesList.classList.remove("disabled");
         noteFormShown = "hidden";  
+        emailField.classList.remove("active")
+        emailField.removeAttribute("required");
         console.log(`note form hidden, noteFormShown is: ${noteFormShown}`);           
         renderNotes("");
     });
@@ -119,8 +122,15 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         noteForm.classList.remove("active");    
         notesList.classList.remove("disabled");        
         noteFormShown = "hidden";
+        emailField.classList.remove("active")
+        emailField.removeAttribute("required");
         console.log(`note form hidden, noteFormShown is: ${noteFormShown}`);
-    });    
+    });  
+    
+    shareButton.addEventListener("click", function(e) {
+        emailField.classList.add("active");
+        emailField.setAttribute("required", "true");
+    });
     
     loginButton.addEventListener("click", async function(e){
         if (!isUserLoggedIn){

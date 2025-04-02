@@ -69,12 +69,12 @@ router.put("/:id",authenticate, async (req, res) => {
         try{
             await Note.findOneAndReplace(
                 {_id: id},
-                {...body},
+                {...body, user : req.signedCookies.userId},
                 { upsert: true }
             );
     
             res.status(201);
-            res.end();
+            res.send(id);
         } catch (error) {        
             console.error(`Couldnt put note id: ${id}.`,error);
             res.status(500);
@@ -90,7 +90,7 @@ router.put("/:id",authenticate, async (req, res) => {
          try{
              await newNote.save();
              res.status(201);
-             res.end();
+             res.json(newNote._id);
          } catch (error) {        
              console.error(`Couldnt save new note.`,error);
              res.status(500);

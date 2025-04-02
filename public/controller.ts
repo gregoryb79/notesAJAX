@@ -1,9 +1,9 @@
-import {doLogIn, addEditNote, deleteNote, doRegister} from "./model.js"
+import {doLogIn, addEditNote, deleteNote, doRegister, sendMessage} from "./model.js"
 
 export async function onNoteFormSubmit(formData: FormData){
 
     const rawNote = Object.fromEntries(formData);  
-    console.log(`form submitted, id: ${rawNote.noteId}, title: ${rawNote.title}`);
+    console.log(`form submitted, id: ${rawNote.noteId}, title: ${rawNote.title}, email:${rawNote.email}`);
 
     if(!rawNote.noteId){
         throw new Error("ID can't be empty"); 
@@ -36,13 +36,27 @@ export async function onNoteFormSubmit(formData: FormData){
         }        
         
 
-    }else if (buttonClicked == "apply"){
-        
+    }else if (buttonClicked == "apply"){       
+      
         try{
-            await addEditNote(note);           
+            note._id = await addEditNote(note);
+            console.log(`The returned note id is${note._id}`);           
         } catch (error){
             console.error(`failed to apply note: ${note._id} - ${note.title}, error: ${error}`);
-        }        
+            throw error;
+        }      
+
+        const email = rawNote.email;        
+        if (email){            
+            if (typeof email !== "string"){
+                throw new Error("email must be a string");
+            }
+            try{
+                await sendMessage(note,email);           
+            } catch (error){
+                console.error(`failed to apply note: ${note._id} - ${note.title}, error: ${error}`);
+            }
+        }  
         
     }
 

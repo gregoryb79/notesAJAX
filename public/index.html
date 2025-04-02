@@ -31,7 +31,8 @@
                 <button type="button" name="action" value="share" id="shareButton" class="shareButton">
                     <img src="./share-icon.svg" alt="share-icon" class="shareIcon">
                 </button>                
-            </section>            
+            </section>
+            <input type="email" name="email" id="emailField" placeholder="e-mail" class="emailField">            
             <textarea name="body" id="noteBody" rows="8"></textarea>
             <div class="buttonsClaster">
                 <button type="submit" name="action" value="apply">Apply</button>
@@ -80,7 +81,7 @@
             document.getElementById("loginButton"), document.getElementById("loginCancel"), 
             document.forms["loginForm"],document.getElementById("registerCancel"), 
             document.forms["registerForm"],document.getElementById("registerLine"),
-            document.getElementById("shareButton")
+            document.getElementById("shareButton"),document.getElementById("emailField")
         );       
         
     </script>

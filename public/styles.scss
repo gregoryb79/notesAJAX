@@ -208,6 +208,18 @@ main{
     }
 }
 
+.emailField{
+    visibility: hidden;
+    display: none;
+    opacity: 0;
+
+    &.active {
+        opacity: 1;
+        visibility: visible;
+        display: flex; 
+    }
+}
+
 .registerLine{
     font-size: var(--smallFont,0.75rem);
     color: #3f6ff3;
