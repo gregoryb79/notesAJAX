@@ -30,20 +30,20 @@ export async function onNoteFormSubmit(formData: FormData){
     if (buttonClicked == "delete"){
         
         try{
-            await deleteNote(note._id);
+            await deleteNote(note._id);           
         } catch (error){
             console.error(`failed to delete note: ${note._id} - ${note.title}, error: ${error}`);
         }        
-        console.log(`note: ${note._id} - ${note.title} is DELETED`);
+        
 
     }else if (buttonClicked == "apply"){
         
         try{
-            await addEditNote(note);
+            await addEditNote(note);           
         } catch (error){
             console.error(`failed to apply note: ${note._id} - ${note.title}, error: ${error}`);
         }        
-        console.log(`note: ${note._id} - ${note.title} is added/edited`);
+        
     }
 
     
@@ -71,11 +71,11 @@ export async function onLoginFormSubmit(formData: FormData){
     const password = rawData.password; 
         
     try{
-        await doLogIn(email,password);
+        await doLogIn(email,password);        
     } catch (error){
         console.error(`failed to log in with: ${email} - ${password}, error: ${error}`);
     }        
-    console.log(`loged in with: ${email} - ${password}`);  
+     
    
 }
 
@@ -113,10 +113,10 @@ export async function onRegisterFormSubmit(formData: FormData){
     };
         
     try{
-        await doRegister(user);
+        await doRegister(user);         
     } catch (error){
         console.error(`failed to register with: ${user.email}, error: ${error}`);
     }        
-    console.log(`registered in with: ${user.email} - ${user.password}`);  
+     
    
 }

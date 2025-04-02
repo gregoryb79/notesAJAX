@@ -1,6 +1,15 @@
 
-import {getNote, getNotes} from "./model.js"
+import {getNote, getNotes, isLoggedIn, logOut} from "./model.js"
 import {onNoteFormSubmit, onLoginFormSubmit, onRegisterFormSubmit} from "./controller.js"
+
+let isUserLoggedIn = false;
+
+try{
+    isUserLoggedIn = await isLoggedIn();
+    console.log(`isUserLoggedIn = ${isUserLoggedIn}`);
+}catch(error){
+    console.error(`Login status check failed`,error);
+}
 
 export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searchForm : HTMLFormElement,
     newNote : HTMLElement, cancelButton : HTMLButtonElement, createdAt : HTMLElement, 
@@ -15,9 +24,14 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
     let registerFormShown : "hidden" | "shown";
     noteFormShown = "hidden";
     loginFormShown = "hidden";
-    registerFormShown = "hidden";
+    registerFormShown = "hidden"; 
 
-
+    if (isUserLoggedIn){
+        loginButton.textContent = "Log Out";
+    }else{
+        loginButton.textContent = "Log In"; 
+    }
+    
     renderNotes("");     
 
     notesList.addEventListener("click", function(e){
@@ -27,14 +41,13 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         if (!noteId){
             return;
         }
-        noteFormShown = "editing";
+        
         console.log(`Note ${noteId} clicked, noteFormShown = ${noteFormShown}`);
-
                         
         showNotesForm(noteId);
         noteForm.classList.add("active");
         notesList.classList.add("disabled");
-        noteFormShown = "shown";           
+        noteFormShown = "editing";          
         console.log(`note form done, noteFormShown is: ${noteFormShown}`);                       
         
     });
@@ -109,22 +122,33 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         console.log(`note form hidden, noteFormShown is: ${noteFormShown}`);
     });    
     
-    loginButton.addEventListener("click", function(e){
-        console.log(`"Login" clicked, loginFormShown is ${loginFormShown}.`);
-        if (loginFormShown == "shown") {
-            loginForm.classList.remove("active");
-            notesList.classList.remove("disabled");
-            newNote.classList.remove("disabled");
-            loginFormShown = "hidden";
-            console.log(`login form hidden, loginFormShown is: ${loginFormShown}`);
-        } else{                         
-            loginForm.classList.add("active");
-            notesList.classList.add("disabled");
-            newNote.classList.add("disabled");
-            console.log("Displaying LoginForm");            
-            loginFormShown = "shown";             
-            console.log(`Login form done, loginFormShown is: ${loginFormShown}`);
+    loginButton.addEventListener("click", async function(e){
+        if (!isUserLoggedIn){
+            console.log(`"Login" clicked, loginFormShown is ${loginFormShown}.`);
+            if (loginFormShown == "shown") {
+                loginForm.classList.remove("active");
+                notesList.classList.remove("disabled");
+                newNote.classList.remove("disabled");
+                loginFormShown = "hidden";
+                console.log(`login form hidden, loginFormShown is: ${loginFormShown}`);
+            } else{                         
+                loginForm.classList.add("active");
+                notesList.classList.add("disabled");
+                newNote.classList.add("disabled");
+                console.log("Displaying LoginForm");            
+                loginFormShown = "shown";             
+                console.log(`Login form done, loginFormShown is: ${loginFormShown}`);
+            }
+        }else{
+            try{
+                await logOut();
+                isUserLoggedIn = false;
+                loginButton.textContent = "Log In";
+            }catch(error){
+                console.error(`Error logging out`,error);
+            }
         }
+       
     });
     loginCancel.addEventListener("click", function(e){
         e.preventDefault();
@@ -147,6 +171,10 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
             .forEach((element) => (element as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement).disabled = true);
         try{
             await onLoginFormSubmit(formData);
+            isUserLoggedIn = await isLoggedIn();
+            if (isUserLoggedIn){
+                loginButton.textContent = "Log Out";
+            }
         }catch(error){
             console.error(error);
         }       
@@ -198,6 +226,10 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
             .forEach((element) => (element as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement).disabled = true);
         try{
             await onRegisterFormSubmit(formData);
+            isUserLoggedIn = await isLoggedIn();
+            if (isUserLoggedIn){
+                loginButton.textContent = "Log Out";
+            }
         }catch(error){
             console.error(error);
         }       
@@ -219,14 +251,20 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         try{
             const notes = await getNotes(query);
             console.log(notes);
-        
-            notesList.innerHTML = notes
-                .map((note) => `
-                                <li data-id="${note._id}">
-                                    ${(new Date(note.createdAt).toLocaleDateString("he"))} ${note.title}
-                                </li>
-                                `)
-                .join("\n");
+            
+            if(notes.length > 0) {
+                notesList.innerHTML = notes
+                    .map((note) => `
+                                    <li data-id="${note._id}">
+                                        ${(new Date(note.createdAt).toLocaleDateString("he"))} ${note.title}
+                                    </li>
+                                    `)
+                    .join("\n");
+            }else if (query != ""){
+                notesList.innerHTML = "<h3>No results for your search...</h3>"
+            }else{
+                notesList.innerHTML = "<h3>Add some notes...</h3>"
+            }
         }catch(error){
             console.error(error);           
             if (String(error).includes("Login required")){

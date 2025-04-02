@@ -2,22 +2,25 @@ import express from "express";
 import {Note} from "../models/notes.model"
 import { authenticate } from "../middleware/authenticate";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 
 export const router = express.Router();
 
 router.get("/",authenticate, async (req, res) => {
     const { search } = req.query;
+    const userId = req.signedCookies.userId;
 
     try{
         const notes = await Note.find(
             {
-                $or:[
-                    {title: new RegExp(search?.toString() ?? "", "gi")},
-                    {body: new RegExp(search?.toString() ?? "", "gi")}
+                $or: [
+                    { title: new RegExp(search?.toString() ?? "", "gi") },
+                    { body: new RegExp(search?.toString() ?? "", "gi") }
                 ],
+                user: userId
             },
-            { _id: true, title: true, createdAt: true},
-        );
+            { _id: true, title: true, createdAt: true }
+        );        
         res.json(notes);
     } catch(error) {
         console.error(`Couldnt do the query: ${search} in DB.`,error);
@@ -30,13 +33,18 @@ router.get("/:id",authenticate, async (req, res) => {
     const { id } = req.params;    
 
     try{
-        console.log(`getting note id= ${id}`);
-        const note = await Note.findById(id);        
-
+        console.log(`getting note id= ${id}`);        
+        const note = await Note.findById(id);       
         if (!note) {
             console.log(`note id : ${id} is not in DB.`);
             res.status(404);
             res.send(`note id : ${id} is not in DB.`);            
+            return;
+        }
+        if (note.user != req.signedCookies.userId){
+            console.log(`Access denied to note id : ${id}.`);
+            res.status(401);
+            res.send(`Access denied to note id : ${id}.`);            
             return;
         }
 
@@ -76,7 +84,7 @@ router.put("/:id",authenticate, async (req, res) => {
         const newNote = new Note({
             title: body.title,
             body: body.body,
-            // createdAt: new Date(),
+            user: req.signedCookies.userId,
         });
         console.log(newNote);
          try{
@@ -96,6 +104,20 @@ router.delete("/:id",authenticate, async (req, res) => {
     const { id } = req.params;
 
     try {
+        const note = await Note.findById(id);       
+        if (!note) {
+            console.log(`note id : ${id} is not in DB.`);
+            res.status(404);
+            res.send(`note id : ${id} is not in DB.`);            
+            return;
+        }
+        if (note.user != req.signedCookies.userId){
+            console.log(`Access denied to note id : ${id}.`);
+            res.status(401);
+            res.send(`Access denied to note id : ${id}.`);            
+            return;
+        }
+        
         await Note.findOneAndDelete({ _id: id });     
         res.status(204);
         res.end();  

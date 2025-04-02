@@ -131,3 +131,28 @@ export async function doRegister(user: submittedUser): Promise<void> {
         console.error(`Error logging in`, error);        
     }    
 }
+
+export async function isLoggedIn():Promise<boolean> {
+    try{
+        const res = await fetch(`/api/users`);
+
+        if (!res.ok){
+            console.log('No one is logged in.');
+            return false;
+        }
+        const userId = await res.json();
+        console.log(`User ${userId} is logged in.`);
+        return true;
+    }catch(error){
+        console.error(`Error cheking for login status`, error);  
+        return false;      
+    } 
+}
+
+export async function logOut():Promise<void> {
+    try{
+        const res = await fetch(`/logout`);        
+    }catch(error){
+        console.error(`Error logging out`, error);              
+    } 
+}

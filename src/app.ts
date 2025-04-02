@@ -49,6 +49,11 @@ app.post("/login", async (req, res) => {
     res.end();
 });
 
+app.get("/logout", async (req, res) => {
+    res.clearCookie("userId", { httpOnly: true, signed: true });
+    res.send("Logged out successfully.");
+});
+
 app.post("/register", async (req, res) => {
     const { email, password, name } = req.body;
 

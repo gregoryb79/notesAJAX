@@ -9,7 +9,7 @@ const schema = new Schema({
     user: {
         type: Types.ObjectId,
         ref: "User",
-        required: false,
+        required: true,
     },
 }, { timestamps: true });
 
