@@ -1,5 +1,6 @@
 import path from "path";
 import express from "express";
+import crypto from "crypto";
 import { json } from "body-parser";
 import cookieParser from "cookie-parser";
 import { router as apiRouter } from "./routers/api";
@@ -14,6 +15,7 @@ app.use((req, _, next) => {
 
 app.use(json());
 app.use(cookieParser(process.env.SESSION_SECRET));
+const hashKey = process.env.HASH_SECRET || "defaultKey";
 
 app.all("/login", (req, res, next) => {
     if (req.signedCookies.userId) {
@@ -29,8 +31,9 @@ app.post("/login", async (req, res) => {
 
     const credentials  = await User.find({email: email},{email: true, password: true});
     console.log(credentials);
+    const hashedPassword = crypto.createHmac("sha256", hashKey).update(password).digest("hex");
 
-    if (email !== credentials[0].email || password !== credentials[0].password) {
+    if (email !== credentials[0].email || hashedPassword !== credentials[0].password) {
         res.status(401);
         res.send("Wrong credentials");
         return;
@@ -63,12 +66,14 @@ app.post("/register", async (req, res) => {
         res.send(`user with email ${email} already exists.`);
         return;
     }
+    
+    const hashedPassword = crypto.createHmac("sha256", hashKey).update(password).digest("hex");
 
     try {     
 
         const createdUser = await User.create({
             email,
-            password,
+            password: hashedPassword,
             name,
         });
 

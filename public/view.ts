@@ -142,6 +142,7 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         }else{
             try{
                 await logOut();
+                renderNotes(""); 
                 isUserLoggedIn = false;
                 loginButton.textContent = "Log In";
             }catch(error){
