@@ -1,4 +1,6 @@
+import { create } from "domain";
 import { addAbortListener } from "events";
+import { title } from "process";
 import { json } from "stream/consumers";
 
 export type Note = {
@@ -15,7 +17,32 @@ type User = {
     createdAt: string
 }
 
+type Message = {
+    _id : string,
+    note: Note,
+    to: User,
+    from: User
+}
+
 let userId = "";
+export async function getLoggedUser(): Promise<User|null> {
+    try{
+        const res = await fetch(`/api/users`);
+    
+        if (!res.ok){
+            console.log('No one is logged in.');
+            return null;       
+        }
+        const user = await res.json();  
+        userId = user._id;  
+        console.log(`User ${user._id} is logged in.`); 
+        return user;  
+    }catch(error){
+        console.error(`Error cheking for login status`, error);
+        return null;
+    } 
+}
+
 
 type submittedNote = Omit<Note,"createdAt">;
 export async function addEditNote(note : submittedNote) : Promise<string> {
@@ -60,8 +87,7 @@ export async function getNotes(query : string) : Promise<returnedNotes[]>{
     try {
         const res = await fetch(`/api/notes${query}`);
         if (!res.ok) {
-            const message = await res.text(); 
-            // console.error(`Error: ${message}`);;
+            const message = await res.text();             
             throw new Error(`Failed to fetch notes. Status: ${res.status}. Message: ${message}`);
         }       
         const notes: returnedNotes[] =  await res.json();
@@ -140,23 +166,6 @@ export async function doRegister(user: submittedUser): Promise<void> {
     }    
 }
 
-export async function isLoggedIn():Promise<boolean> {
-    try{
-        const res = await fetch(`/api/users`);
-
-        if (!res.ok){
-            console.log('No one is logged in.');
-            return false;
-        }
-        userId = await res.json();
-        console.log(`User ${userId} is logged in.`);
-        return true;
-    }catch(error){
-        console.error(`Error cheking for login status`, error);  
-        return false;      
-    } 
-}
-
 export async function logOut():Promise<void> {
     try{
         const res = await fetch(`/logout`);        
@@ -169,12 +178,14 @@ export async function sendMessage(note: submittedNote, email : string): Promise<
     
     let recepientId = "";
     try{
-        const res = await fetch(`/api/users?search=${email}`);
+        const res = await fetch(`/api/users/${email}`);
         if (!res.ok) {
             const message = await res.text();             
             throw new Error(`No recepient found Status: ${res.status}. Message: ${message}`);
         }   
-        recepientId = await res.json();
+        const user = await res.json();
+        console.log(user);
+        recepientId = user[0]._id;
 
         console.log(`The ID of ${email} is ${recepientId}`);
 
@@ -208,4 +219,34 @@ export async function sendMessage(note: submittedNote, email : string): Promise<
         throw error; 
     }
     
+}
+
+type returnedMessage = Omit <Message,"to"|"from">;
+export async function checkMessages() : Promise<returnedNotes[]> {
+    
+    const sentNotes: returnedNotes[] = [];
+
+    if (!userId){
+        throw new Error(`No user logged in - unable to check messages.`)
+    }
+    try{
+        const res = await fetch(`/api/messages/${userId}`);
+        const messages: returnedMessage[] =  await res.json();
+        console.log(messages);
+        for (const message of messages){
+            const rawNote = message.note;           
+            const note = {
+                _id : rawNote._id,
+                title : rawNote.title,
+                createdAt : rawNote.createdAt};           
+
+            sentNotes.push(note);
+        }
+
+        return sentNotes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+              
+    }catch(error){
+        console.error(`Error getting messages.`,error);
+        throw error;
+    }      
 }

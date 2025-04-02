@@ -54,7 +54,7 @@ export async function onNoteFormSubmit(formData: FormData){
             try{
                 await sendMessage(note,email);           
             } catch (error){
-                console.error(`failed to apply note: ${note._id} - ${note.title}, error: ${error}`);
+                console.error(`failed to apply message: ${note._id} - ${note.title}, error: ${error}`);
             }
         }  
         

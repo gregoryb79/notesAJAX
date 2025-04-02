@@ -10,15 +10,18 @@
     <main class="u-border-radius-8">
         <nav class="topNavMenu">
             <button id="loginButton" class="loginButton active">Login</button>
+            <p id="helloUsername" class="helloUsername"></p>
         </nav>
         <h2 class="u-margin-top-0">Notes</h2>
         <search>
-            <form name="searchForm">
+            <form name="searchForm" class="u-margin-bottom-16">
                 <input type="search" name="search" placeholder="Search..." />
                 <button type="submit">Search</button>
             </form>
         </search>
-        
+        <ul class="sharedNotesList" id="sharedNotesList">
+            <!-- notes date and title to be rendered here -->
+        </ul>
         <ul class="notesList" id="notesList">
             <!-- notes date and title to be rendered here -->
         </ul>
@@ -81,7 +84,8 @@
             document.getElementById("loginButton"), document.getElementById("loginCancel"), 
             document.forms["loginForm"],document.getElementById("registerCancel"), 
             document.forms["registerForm"],document.getElementById("registerLine"),
-            document.getElementById("shareButton"),document.getElementById("emailField")
+            document.getElementById("shareButton"),document.getElementById("emailField"),
+            document.getElementById("helloUsername"),document.getElementById("sharedNotesList")
         );       
         
     </script>

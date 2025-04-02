@@ -1,22 +1,23 @@
 
-import {getNote, getNotes, isLoggedIn, logOut} from "./model.js"
+import {getNote, getNotes, getLoggedUser, logOut, checkMessages} from "./model.js"
 import {onNoteFormSubmit, onLoginFormSubmit, onRegisterFormSubmit} from "./controller.js"
 
 let isUserLoggedIn = false;
-
-try{
-    isUserLoggedIn = await isLoggedIn();
-    console.log(`isUserLoggedIn = ${isUserLoggedIn}`);
-}catch(error){
-    console.error(`Login status check failed`,error);
+const user = await getLoggedUser();
+if (user){
+    isUserLoggedIn = true;
 }
+
+
+
 
 export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searchForm : HTMLFormElement,
     newNote : HTMLElement, cancelButton : HTMLButtonElement, createdAt : HTMLElement, 
     loginButton : HTMLButtonElement, loginCancel : HTMLButtonElement, 
     loginForm : HTMLFormElement, registerCancel : HTMLButtonElement,
     registerForm : HTMLFormElement, registerLine : HTMLElement, 
-    shareButton: HTMLButtonElement, emailField : HTMLElement){
+    shareButton: HTMLButtonElement, emailField : HTMLElement, helloUsername : HTMLElement,
+    sharedNotesList : HTMLElement){
 
     const dateFormatter = new Intl.DateTimeFormat("he");    
 
@@ -29,6 +30,8 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
 
     if (isUserLoggedIn){
         loginButton.textContent = "Log Out";
+        helloUsername.textContent = `Hello, ${user?.name}`;
+        helloUsername.classList.add("active");
     }else{
         loginButton.textContent = "Log In"; 
     }
@@ -155,6 +158,8 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
                 renderNotes(""); 
                 isUserLoggedIn = false;
                 loginButton.textContent = "Log In";
+                helloUsername.classList.remove("active");
+                helloUsername.textContent = "";
             }catch(error){
                 console.error(`Error logging out`,error);
             }
@@ -182,9 +187,14 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
             .forEach((element) => (element as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement).disabled = true);
         try{
             await onLoginFormSubmit(formData);
-            isUserLoggedIn = await isLoggedIn();
+            const user = await getLoggedUser();
+            if (user){
+                isUserLoggedIn = true;
+            }
             if (isUserLoggedIn){
                 loginButton.textContent = "Log Out";
+                helloUsername.classList.add("active");
+                helloUsername.textContent = `Hello, ${user?.name}`;
             }
         }catch(error){
             console.error(error);
@@ -237,9 +247,14 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
             .forEach((element) => (element as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement).disabled = true);
         try{
             await onRegisterFormSubmit(formData);
-            isUserLoggedIn = await isLoggedIn();
+            const user = await getLoggedUser();
+            if (user){
+                isUserLoggedIn = true;
+            }
             if (isUserLoggedIn){
                 loginButton.textContent = "Log Out";
+                helloUsername.classList.add("active");
+                helloUsername.textContent = `Hello, ${user?.name}`;
             }
         }catch(error){
             console.error(error);
@@ -262,7 +277,20 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
         try{
             const notes = await getNotes(query);
             console.log(notes);
-            
+            const sentNotes = await checkMessages();
+            console.log(sentNotes);
+            if(notes.length > 0) {
+                sharedNotesList.innerHTML = sentNotes
+                    .map((note) => `
+                                    <li data-id="${note._id}">
+                                        ${(new Date(note.createdAt).toLocaleDateString("he"))} ${note.title}
+                                    </li>
+                                    `)
+                    .join("\n");
+            }else{
+                notesList.innerHTML = "<p>No notes shared with you...</p>"
+            }
+
             if(notes.length > 0) {
                 notesList.innerHTML = notes
                     .map((note) => `
@@ -280,6 +308,7 @@ export function index(notesList : HTMLElement, noteForm : HTMLFormElement, searc
             console.error(error);           
             if (String(error).includes("Login required")){
                 notesList.innerHTML = "<h3>Please log in.</h3>"
+                sharedNotesList.innerHTML = "";
             }else{
                 notesList.innerHTML = "<h3>Ooops, something whent wrong... Try again.</h3>"
             }

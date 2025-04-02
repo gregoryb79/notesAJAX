@@ -74,7 +74,7 @@ router.put("/:id",authenticate, async (req, res) => {
             );
     
             res.status(201);
-            res.send(id);
+            res.json(id);
         } catch (error) {        
             console.error(`Couldnt put note id: ${id}.`,error);
             res.status(500);

@@ -10,6 +10,7 @@
     --regularFont : clamp(0.8rem, 1.8vw, 1.2rem);//1.2rem;
     --largeFont : clamp(1rem, 2vw, 1.5rem);//1.5rem;
     --iconWidth : 0.9rem;
+    --mainWidth : 45vw;
    
     @media (prefers-color-scheme: dark) {
        
@@ -71,13 +72,13 @@ main{
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 45vw;
+    width: var(--mainWidth);
     margin: auto;
     border: 1px solid darkgray;     
     
-    > *:first-child {
-        align-self: flex-start;
-    }
+    // > *:first-child {
+    //     align-self: flex-start;
+    // }
 }
 
 .u-border-radius-8{
@@ -86,6 +87,10 @@ main{
 
 .u-margin-top-0{
     margin-top: 0;
+}
+
+.u-margin-bottom-16{
+    margin-bottom: 1rem;
 }
 
 .plusButton{
@@ -114,6 +119,35 @@ main{
     padding-right: 1rem;
     padding-bottom: 0.5rem;
     overflow: auto;
+    // border: 1px solid darkgray; 
+
+    li{
+        cursor: pointer;
+        &:hover{
+            transform: scale(1.01);
+            color: darkblue;
+        }
+    }
+
+    &.disabled {
+        pointer-events: none; 
+        opacity: 0.5; 
+    }
+}
+
+.sharedNotesList{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 20vh;
+    // min-height: 5vh;
+    width: 40vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    // padding-bottom: 0.5rem;
+    margin: 0;
+    overflow: auto;
+    color: darkblue;
     // border: 1px solid darkgray; 
 
     li{
@@ -187,7 +221,11 @@ main{
 
 .topNavMenu{
     margin-left: 0.5rem;
+    margin-right: 0.5rem;
     margin-top: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    width: calc(var(--mainWidth) - 1rem);
 }
 
 .loginButton{
@@ -206,6 +244,20 @@ main{
     &:hover{
         transform: scale(1.1);
     }
+}
+
+.helloUsername{
+    visibility: hidden;
+    opacity: 0;
+    font-size: var(--regularFont);
+    color: purple;
+    margin: 0;
+
+    &.active {
+        opacity: 1;
+        visibility: visible; 
+    }
+
 }
 
 .emailField{
