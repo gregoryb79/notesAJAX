@@ -4,6 +4,7 @@
   "description": "\"Quick Notes\" – A Simple AJAX-Based Notes App",
   "main": "index.js",
   "scripts": {
+    "start": "tsx --no-check src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm-run-all -p dev:*",
     "dev:server": "tsx --no-check --watch src/index.ts",
